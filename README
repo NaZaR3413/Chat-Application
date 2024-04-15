@@ -1,1 +1,10 @@
-Basic terminal level chat application
+Multithreaded client to single server chat application using java networking programming. 
+
+Run instructions:
+1)  run server side first in a terminal: java Server.java
+
+2)  run desired amount of client threads in separate terminals: java Client.java
+
+In progress:
+- client to client chats
+- client sends file to server 
