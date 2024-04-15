@@ -66,7 +66,7 @@ public class Server {
                     while((line = input.readLine()) != null) {
                         // print out recieved msg from client
                         System.out.printf("Sent from client: %s\n", line);
-                        output.print(line);
+                        output.println(line);
                     }
 
             }
