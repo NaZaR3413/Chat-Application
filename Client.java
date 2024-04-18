@@ -17,6 +17,12 @@ public class Client {
             Scanner scan = new Scanner(System.in);
             String line = null;
 
+            // ask for username before we begin
+            System.out.println("Please enter a username: ");
+            line = scan.nextLine();
+            output.println(line);
+            output.flush();
+
             // establish exit as the keyword to end the process
             while(!"exit".equalsIgnoreCase(line)) {
                 // scan in inputs
