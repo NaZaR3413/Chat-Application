@@ -1,7 +1,11 @@
 import java.io.*;
 import java.net.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
+    // setup map to keep track of clients
+    private static Map<String, PrintWriter> clientMap = new ConcurrentHashMap<>();
     public static void main(String[] args) {
         ServerSocket server = null;
 
@@ -54,6 +58,7 @@ public class Server {
         public void run() {
             PrintWriter output = null;
             BufferedReader input = null;
+            String clientName = null;
 
             try {
                     // get output of client 
@@ -62,11 +67,33 @@ public class Server {
                     // get input of client 
                     input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+                    clientName = input.readLine();
+                    System.out.println("Client username: " + clientName);
+
+                    // add user to clientMap
+                    clientMap.put(clientName, output);
+
+                    // string to read each client input
                     String line;
                     while((line = input.readLine()) != null) {
-                        // print out recieved msg from client
-                        System.out.printf("Sent from client: %s\n", line);
-                        output.println(line);
+                        // print out recieved msg from client on server side
+                        System.out.println("Sent from " + clientName + ": " + line);
+                        //System.out.printf("Sent from client: %s\n", line);
+                        //output.println(line);
+                        
+                        // Assume the input format: "recipientName:message"
+                        int separatorIndex = line.indexOf(":");
+                        if (separatorIndex != -1) {
+                            // extract intended recipient
+                            String recipient = line.substring(0, separatorIndex);
+                            // extract the message
+                            String message = line.substring(separatorIndex + 1);
+                            PrintWriter recipientOut = clientMap.get(recipient);
+                            if (recipientOut != null) { 
+                                // if the user exists
+                                recipientOut.println(clientName + ": " + message);
+                            }
+                        }
                     }
 
             }
@@ -74,6 +101,8 @@ public class Server {
                 e.printStackTrace();
             }
             finally {
+                // remove client from map if added
+                clientMap.remove(clientName);
                 try {
                     if(output != null) {
                         output.close();
