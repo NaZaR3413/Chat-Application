@@ -32,8 +32,14 @@ public class Client {
                 output.println(line);
                 output.flush();
 
+
+                // verfy server reply
+                String serverReply = input.readLine();
                 // print server replies
-                System.out.println("Server replies: " + input.readLine());
+                if(serverReply != null)
+                {
+                    System.out.println("Server replies: " + input.readLine());
+                }
 
             }
 

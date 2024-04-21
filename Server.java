@@ -71,7 +71,9 @@ public class Server {
                     System.out.println("Client username: " + clientName);
 
                     // add user to clientMap
-                    clientMap.put(clientName, output);
+                    synchronized (clientMap) {
+                        clientMap.put(clientName, output);
+                    }
 
                     // string to read each client input
                     String line;
@@ -79,10 +81,11 @@ public class Server {
                         // print out recieved msg from client on server side
                         System.out.println("Sent from " + clientName + ": " + line);
                         //System.out.printf("Sent from client: %s\n", line);
-                        //output.println(line);
+                        output.println(line);
                         
                         // Assume the input format: "recipientName:message"
-                        int separatorIndex = line.indexOf(":");
+                        /*int separatorIndex = line.indexOf(":");
+
                         if (separatorIndex != -1) {
                             // extract intended recipient
                             String recipient = line.substring(0, separatorIndex);
@@ -90,10 +93,14 @@ public class Server {
                             String message = line.substring(separatorIndex + 1);
                             PrintWriter recipientOut = clientMap.get(recipient);
                             if (recipientOut != null) { 
-                                // if the user exists
                                 recipientOut.println(clientName + ": " + message);
+                                // flush out 
+                                recipientOut.flush();
+                            } else {
+                                output.println("Recipient not found: " + recipient);
+                                output.flush();
                             }
-                        }
+                        }*/
                     }
 
             }
@@ -102,7 +109,9 @@ public class Server {
             }
             finally {
                 // remove client from map if added
-                clientMap.remove(clientName);
+                synchronized (clientMap) {
+                    clientMap.remove(clientName);
+                }
                 try {
                     if(output != null) {
                         output.close();
