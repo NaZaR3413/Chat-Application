@@ -81,10 +81,11 @@ public class Server {
                         // print out recieved msg from client on server side
                         System.out.println("Sent from " + clientName + ": " + line);
                         //System.out.printf("Sent from client: %s\n", line);
-                        output.println(line);
+                        //output.println(line);
+                        //output.flush();
                         
                         // Assume the input format: "recipientName:message"
-                        /*int separatorIndex = line.indexOf(":");
+                        int separatorIndex = line.indexOf(":");
 
                         if (separatorIndex != -1) {
                             // extract intended recipient
@@ -100,7 +101,7 @@ public class Server {
                                 output.println("Recipient not found: " + recipient);
                                 output.flush();
                             }
-                        }*/
+                        }
                     }
 
             }
