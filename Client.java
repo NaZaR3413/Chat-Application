@@ -3,8 +3,9 @@ import java.net.*;
 import java.util.*;
 
 public class Client {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException, IOException {
 
+        Scanner scan = new Scanner(System.in);
         // establish connection to port
         try (Socket socket = new Socket("localhost", 8080)) {
             // writing to server
@@ -13,8 +14,10 @@ public class Client {
             // reading from server
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+            DataInputStream dis = new DataInputStream(socket.getInputStream()); 
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream()); 
+
             // set up scanner/reader objects
-            Scanner scan = new Scanner(System.in);
             String line = null;
 
             // ask for username before we begin
@@ -23,8 +26,53 @@ public class Client {
             output.println(line);
             output.flush();
 
+            // write message thread
+            Thread sendMessage = new Thread(new Runnable()  
+            { 
+                @Override
+                public void run() { 
+                    while (true) { 
+    
+                        // read the message to deliver. 
+                        String msg = scan.nextLine(); 
+                        
+                        try { 
+                            // write on the output stream 
+                            dos.writeUTF(msg); 
+                        } 
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    } 
+                } 
+            }); 
+
+            // readMessage thread 
+            Thread readMessage = new Thread(new Runnable()  
+            { 
+                @Override
+                public void run() { 
+    
+                    while (true) { 
+                        try { 
+                            // read the message sent to this client 
+                            String msg = dis.readUTF(); 
+                            System.out.println(msg);
+                        } catch (IOException e) { 
+    
+                            e.printStackTrace(); 
+                        } 
+                    } 
+                } 
+            }); 
+
+            // start both threads
+            sendMessage.start();
+            readMessage.start();
+
             // establish exit as the keyword to end the process
-            while(!"exit".equalsIgnoreCase(line)) {
+            /*while(!"exit".equalsIgnoreCase(line)) {
                 // scan in inputs
                 line = scan.nextLine();
 
@@ -41,13 +89,15 @@ public class Client {
                     System.out.println("Server replies: " + serverReply);
                 }
 
-            }
+            }*/
 
             // close scan object when exit
-            scan.close();
         }
         catch (IOException e) {
             e.printStackTrace();
+        }
+        finally {
+            scan.close();
         }
     }
 }
