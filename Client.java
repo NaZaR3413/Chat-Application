@@ -19,6 +19,16 @@ public class Client
         // obtaining input and out streams 
         DataInputStream dis = new DataInputStream(s.getInputStream()); 
         DataOutputStream dos = new DataOutputStream(s.getOutputStream()); 
+
+        // read in username
+        System.out.println("Enter username");
+        String username = scn.nextLine();
+
+        try {
+            dos.writeUTF(username);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
   
         // sendMessage thread 
         Thread sendMessage = new Thread(new Runnable()  

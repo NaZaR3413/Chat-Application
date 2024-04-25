@@ -33,9 +33,10 @@ public class Server
             DataOutputStream dos = new DataOutputStream(s.getOutputStream());
              
             System.out.println("Creating a new handler for this client...");
- 
+            
+            String username = dis.readUTF();
             // Create a new handler object for handling this request.
-            ClientHandler mtch = new ClientHandler(s,"client " + i, dis, dos);
+            ClientHandler mtch = new ClientHandler(s,username, dis, dos);
  
             // Create a new Thread with this object.
             Thread t = new Thread(mtch);
