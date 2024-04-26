@@ -14,11 +14,11 @@ public class Client
         InetAddress ip = InetAddress.getByName("localhost"); 
           
         // establish the connection 
-        Socket s = new Socket(ip, ServerPort); 
+        Socket socket = new Socket(ip, ServerPort); 
           
         // obtaining input and out streams 
-        DataInputStream dis = new DataInputStream(s.getInputStream()); 
-        DataOutputStream dos = new DataOutputStream(s.getOutputStream()); 
+        DataInputStream dis = new DataInputStream(socket.getInputStream()); 
+        DataOutputStream dos = new DataOutputStream(socket.getOutputStream()); 
 
         // read in username
         System.out.println("Enter username");
