@@ -92,7 +92,7 @@ class ClientHandler implements Runnable
                 }
 
                 if(received.equals("print userlist")) {
-                    dos.writeUTF("User list: ");
+                    this.dos.writeUTF("User list: ");
                     for (ClientHandler mc : Server.ar) 
                     {
                         dos.writeUTF(mc.name);
