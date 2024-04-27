@@ -2,7 +2,6 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
  
-// Server class
 public class Server 
 {
  
@@ -100,30 +99,44 @@ class ClientHandler implements Runnable
                     {
                         dos.writeUTF(mc.name);
                     }
+                    // return to the top of loop to avoid further processing
+                    continue;
 
                 }
-                else 
+
+                // check for proper recipient formatting 
+                if(received.contains("#"))
                 {
                     // break the string into message and recipient part
                     // stringtokenizer seperates words before and after an '#'
                     StringTokenizer st = new StringTokenizer(received, "#");
-                    String MsgToSend = st.nextToken();
-                    String recipient = st.nextToken();
 
-                    // search for the recipient in the connected devices list.
-                    // ar is the vector storing client of active users
-                    for (ClientHandler mc : Server.ar) 
-                    {
-                        // if the recipient is found, write on its
-                        // output stream
-                        if (mc.name.equals(recipient) && mc.isloggedin==true) 
+                    // verify that at message and intended recipient are present
+                    if(st.countTokens() >= 2) {
+                        String MsgToSend = st.nextToken();
+                        String recipient = st.nextToken();
+
+                        // search for the recipient in the connected devices list.
+                        // ar is the vector storing client of active users
+                        for (ClientHandler mc : Server.ar) 
                         {
-                            mc.dos.writeUTF(this.name+" : "+ MsgToSend);
-                            break;
+                            // if the recipient is found, write on its
+                            // output stream
+                            if (mc.name.equals(recipient) && mc.isloggedin==true) 
+                            {
+                                mc.dos.writeUTF(this.name+" : "+ MsgToSend);
+                                break;
+                            }
                         }
                     }
+                    else 
+                    {
+                        dos.writeUTF("ERROR: Invalid message format. 2 or more tokens not present");
+                    }
                 }
- 
+                else{
+                    dos.writeUTF("ERROR: Invalid message. Expected 'message#recipient'");
+                }
             } catch (IOException e) {
                  
                 e.printStackTrace();
@@ -136,13 +149,10 @@ class ClientHandler implements Runnable
             this.dis.close();
             this.dos.close();
             this.socket.close();
+            scn.close();
              
         }catch(IOException e){
             e.printStackTrace();
         }
-    }
-
-    static void printUserList() {
-
     }
 }

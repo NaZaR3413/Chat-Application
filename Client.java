@@ -61,12 +61,22 @@ public class Client
                         // read the message sent to this client 
                         String msg = dis.readUTF(); 
                         System.out.println(msg); 
-                    } catch (IOException e) { 
-  
-                        e.printStackTrace(); 
-                    } 
+                    } catch (EOFException eof) { // client logsout, server shuts down this client thread
+                        System.out.println("Connection closed by the server.");
+                        // close all processes and exit
+                        try {
+                            dos.close();
+                            dis.close();
+                            socket.close();
+                            System.exit(0);
+                        } catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 } 
-            } 
+            }
         }); 
   
         sendMessage.start(); 
