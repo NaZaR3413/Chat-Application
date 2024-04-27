@@ -87,36 +87,43 @@ class ClientHandler implements Runnable
                  
                 if(received.equals("logout")){
                     this.isloggedin=false;
+                    synchronized (Server.ar) {
+                        Server.ar.remove(this);
+                    }
                     this.socket.close();
                     break;
                 }
 
                 if(received.equals("print userlist")) {
-                    dos.writeUTF("User list: ");
+                    this.dos.writeUTF("User list: ");
                     for (ClientHandler mc : Server.ar) 
                     {
                         dos.writeUTF(mc.name);
                     }
 
                 }
-                 
-                // break the string into message and recipient part
-                StringTokenizer st = new StringTokenizer(received, "#");
-                String MsgToSend = st.nextToken();
-                String recipient = st.nextToken();
- 
-                // search for the recipient in the connected devices list.
-                // ar is the vector storing client of active users
-                for (ClientHandler mc : Server.ar) 
+                else 
                 {
-                    // if the recipient is found, write on its
-                    // output stream
-                    if (mc.name.equals(recipient) && mc.isloggedin==true) 
+                    // break the string into message and recipient part
+                    // stringtokenizer seperates words before and after an '#'
+                    StringTokenizer st = new StringTokenizer(received, "#");
+                    String MsgToSend = st.nextToken();
+                    String recipient = st.nextToken();
+
+                    // search for the recipient in the connected devices list.
+                    // ar is the vector storing client of active users
+                    for (ClientHandler mc : Server.ar) 
                     {
-                        mc.dos.writeUTF(this.name+" : "+ MsgToSend);
-                        break;
+                        // if the recipient is found, write on its
+                        // output stream
+                        if (mc.name.equals(recipient) && mc.isloggedin==true) 
+                        {
+                            mc.dos.writeUTF(this.name+" : "+ MsgToSend);
+                            break;
+                        }
                     }
                 }
+ 
             } catch (IOException e) {
                  
                 e.printStackTrace();
@@ -128,9 +135,14 @@ class ClientHandler implements Runnable
             // closing resources
             this.dis.close();
             this.dos.close();
+            this.socket.close();
              
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    static void printUserList() {
+
     }
 }
