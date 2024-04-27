@@ -149,6 +149,7 @@ class ClientHandler implements Runnable
             this.dis.close();
             this.dos.close();
             this.socket.close();
+            scn.close();
              
         }catch(IOException e){
             e.printStackTrace();
