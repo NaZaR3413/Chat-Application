@@ -1,6 +1,7 @@
 import java.io.*; 
 import java.net.*; 
 import java.util.Scanner; 
+import javax.swing.*;
   
 public class Client  
 { 
@@ -39,13 +40,21 @@ public class Client
   
                     // read the message to deliver. 
                     String msg = scn.nextLine(); 
-                      
-                    try { 
-                        // write on the output stream 
-                        dos.writeUTF(msg); 
-                    } catch (IOException e) { 
-                        e.printStackTrace(); 
-                    } 
+
+                    if(msg .equals("send file")) 
+                    {
+                        System.out.println("post sendfile print");
+                        sendFile(dos);
+                    }
+                    else 
+                    {
+                        try { 
+                            // write on the output stream 
+                            dos.writeUTF(msg); 
+                        } catch (IOException e) { 
+                            e.printStackTrace(); 
+                        } 
+                    }
                 } 
             } 
         }); 
@@ -83,4 +92,53 @@ public class Client
         readMessage.start(); 
   
     } 
+
+    private static void sendFile(DataOutputStream dos)
+    {
+        JFileChooser j = new JFileChooser("d:");
+ 
+        // Open the save dialog
+        j.showSaveDialog(null);
+    }
+
+    // method to send files to server side
+    /*private static void sendFile(DataOutputStream dos)
+    {
+        // have user pick a file
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Please choose a .txt file to send");
+
+        int result = fileChooser.showOpenDialog(null);
+        System.out.println("beginning method print test");
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File fileToSend = fileChooser.getSelectedFile();
+
+            try{
+                // Send file metadata to the server
+                dos.writeUTF(fileToSend.getName()); // Send file name
+                dos.writeLong(fileToSend.length()); // Send file size
+                
+                // Send file content to the server
+                try (FileInputStream fis = new FileInputStream(fileToSend)) {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = fis.read(buffer)) != -1) {
+                        dos.write(buffer, 0, bytesRead);
+                    }
+                    dos.flush();
+                } catch(FileNotFoundException fnfe) {
+                    fnfe.printStackTrace();
+                } catch(IOException ioe) {
+                    ioe.printStackTrace();
+                }
+
+                System.out.println("File sent successfully.");
+
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+            
+        }
+    }*/
 } 
