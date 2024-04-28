@@ -155,4 +155,10 @@ class ClientHandler implements Runnable
             e.printStackTrace();
         }
     }
+
+    // method to accept files send by clients
+    private static void receiveFile()
+    {
+
+    }
 }

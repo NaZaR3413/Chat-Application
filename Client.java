@@ -1,6 +1,7 @@
 import java.io.*; 
 import java.net.*; 
 import java.util.Scanner; 
+import javax.swing.*;
   
 public class Client  
 { 
@@ -39,13 +40,21 @@ public class Client
   
                     // read the message to deliver. 
                     String msg = scn.nextLine(); 
-                      
-                    try { 
-                        // write on the output stream 
-                        dos.writeUTF(msg); 
-                    } catch (IOException e) { 
-                        e.printStackTrace(); 
-                    } 
+
+                    if(msg .equals("send file")) 
+                    {
+                        System.out.println("post sendfile print");
+                        sendFile(dos, scn);
+                    }
+                    else 
+                    {
+                        try { 
+                            // write on the output stream 
+                            dos.writeUTF(msg); 
+                        } catch (IOException e) { 
+                            e.printStackTrace(); 
+                        } 
+                    }
                 } 
             } 
         }); 
@@ -83,4 +92,44 @@ public class Client
         readMessage.start(); 
   
     } 
+
+    // method to send files to server side
+    private static void sendFile(DataOutputStream dos, Scanner scn)
+    {
+        // grab file path from client 
+        System.out.println("Please enter the exact path of the file you would like to send: ");
+        String filePath = scn.nextLine();
+
+        File fileToSend = new File(filePath);
+
+        // verify file exists and proceed if it is C:\Users\nilay\Downloads\Hackathon txt.txt
+        if(fileToSend.exists() && fileToSend.isFile())
+        {
+            //System.out.println("Yes exists");
+
+            // Send file metadata to the server
+            try {
+                dos.writeUTF(fileToSend.getName()); // Send file name
+                dos.writeLong(fileToSend.length()); // Send file size
+
+                FileInputStream fis = new FileInputStream(fileToSend);
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    dos.write(buffer, 0, bytesRead);
+                }
+                dos.flush();
+
+                System.out.println("file send successfully!");
+                fis.close();
+
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            System.out.println("ERROR: File does not exist or is not a valid file");
+        }
+
+    }
 } 
