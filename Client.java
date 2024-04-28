@@ -44,7 +44,7 @@ public class Client
                     if(msg .equals("send file")) 
                     {
                         System.out.println("post sendfile print");
-                        sendFile(dos);
+                        sendFile(dos, scn);
                     }
                     else 
                     {
@@ -93,52 +93,43 @@ public class Client
   
     } 
 
-    private static void sendFile(DataOutputStream dos)
-    {
-        JFileChooser j = new JFileChooser("d:");
- 
-        // Open the save dialog
-        j.showSaveDialog(null);
-    }
-
     // method to send files to server side
-    /*private static void sendFile(DataOutputStream dos)
+    private static void sendFile(DataOutputStream dos, Scanner scn)
     {
-        // have user pick a file
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Please choose a .txt file to send");
+        // grab file path from client 
+        System.out.println("Please enter the exact path of the file you would like to send: ");
+        String filePath = scn.nextLine();
 
-        int result = fileChooser.showOpenDialog(null);
-        System.out.println("beginning method print test");
+        File fileToSend = new File(filePath);
 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File fileToSend = fileChooser.getSelectedFile();
+        // verify file exists and proceed if it is C:\Users\nilay\Downloads\Hackathon txt.txt
+        if(fileToSend.exists() && fileToSend.isFile())
+        {
+            //System.out.println("Yes exists");
 
-            try{
-                // Send file metadata to the server
+            // Send file metadata to the server
+            try {
                 dos.writeUTF(fileToSend.getName()); // Send file name
                 dos.writeLong(fileToSend.length()); // Send file size
-                
-                // Send file content to the server
-                try (FileInputStream fis = new FileInputStream(fileToSend)) {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = fis.read(buffer)) != -1) {
-                        dos.write(buffer, 0, bytesRead);
-                    }
-                    dos.flush();
-                } catch(FileNotFoundException fnfe) {
-                    fnfe.printStackTrace();
-                } catch(IOException ioe) {
-                    ioe.printStackTrace();
-                }
 
-                System.out.println("File sent successfully.");
+                FileInputStream fis = new FileInputStream(fileToSend);
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    dos.write(buffer, 0, bytesRead);
+                }
+                dos.flush();
+
+                System.out.println("file send successfully!");
+                fis.close();
 
             } catch(IOException e) {
                 e.printStackTrace();
             }
-            
         }
-    }*/
+        else {
+            System.out.println("ERROR: File does not exist or is not a valid file");
+        }
+
+    }
 } 
