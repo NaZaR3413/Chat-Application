@@ -103,6 +103,10 @@ class ClientHandler implements Runnable
                     continue;
 
                 }
+                else if(received.equals("file incoming")) 
+                {
+                    // return to the top of the loop to avoid further processing
+                }
 
                 // check for proper recipient formatting 
                 if(received.contains("#"))
@@ -157,8 +161,8 @@ class ClientHandler implements Runnable
     }
 
     // method to accept files send by clients
-    private static void receiveFile()
+    private static void receiveFile() throws Exception 
     {
-
+         
     }
 }
