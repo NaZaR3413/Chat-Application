@@ -43,7 +43,7 @@ public class Client
 
                     if(msg .equals("send file")) 
                     {
-                        System.out.println("post sendfile print");
+                        //System.out.println("post sendfile print");
                         sendFile(dos, scn);
                     }
                     else 
@@ -109,6 +109,8 @@ public class Client
 
             // Send file metadata to the server
             try {
+                // signal for the server to know when a file is coming
+                dos.writeUTF("file incoming");
                 dos.writeUTF(fileToSend.getName()); // Send file name
                 dos.writeLong(fileToSend.length()); // Send file size
 
