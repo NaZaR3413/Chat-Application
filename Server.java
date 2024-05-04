@@ -105,7 +105,10 @@ class ClientHandler implements Runnable
                 }
                 else if(received.equals("file incoming")) 
                 {
+                    // parse through incoming file and download file to directory
+                    //receiveFile();
                     // return to the top of the loop to avoid further processing
+                    continue;
                 }
 
                 // check for proper recipient formatting 
@@ -161,7 +164,7 @@ class ClientHandler implements Runnable
     }
 
     // method to accept files send by clients
-    private static void receiveFile() throws Exception 
+    private static void receiveFile()  throws Exception
     {
          
     }
