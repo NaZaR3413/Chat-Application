@@ -5,6 +5,10 @@ Run instructions:
 
 2)  run desired amount of client threads in separate terminals: java Client.java
 
-In progress:
+Current functionalities:
 - client to client chats
 - client sends file to server 
+
+In progress:
+- User friendly UI
+- connect frontend and backend
