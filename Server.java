@@ -106,7 +106,7 @@ class ClientHandler implements Runnable
                 else if(received.equals("file incoming")) 
                 {
                     // parse through incoming file and download file to directory
-                    //receiveFile();
+                    receiveFile(dis);
                     // return to the top of the loop to avoid further processing
                     continue;
                 }
@@ -164,8 +164,24 @@ class ClientHandler implements Runnable
     }
 
     // method to accept files send by clients
-    private static void receiveFile()  throws Exception
+    private static void receiveFile(DataInputStream dis) throws IOException
     {
-         
+         // recieve metadata
+         String fileName = dis.readUTF();
+         long fileSize = dis.readLong();
+
+         // save file
+         File receivedFile = new File(fileName);
+         try (FileOutputStream fos = new FileOutputStream(receivedFile)) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            long remaining = fileSize;
+            while (remaining > 0 && (bytesRead = dis.read(buffer, 0, (int) Math.min(buffer.length, remaining))) != -1) {
+                fos.write(buffer, 0, bytesRead);
+                remaining -= bytesRead;
+            }
+            System.out.println("File " + fileName + " saved");
+        } 
+
     }
 }
