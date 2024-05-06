@@ -10,5 +10,6 @@ Current functionalities:
 - client sends file to server 
 
 In progress:
-- User friendly UI
-- connect frontend and backend
+- user auth
+- friends list
+- chat history setup
