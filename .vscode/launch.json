@@ -22,7 +22,7 @@
             "name": "Database",
             "request": "launch",
             "mainClass": "Database",
-            "projectName": "Chat-Application_ff8f7e90"
+            "projectName": "Chat-Application_ff8f7e90",
         },
         {
             "type": "java",
