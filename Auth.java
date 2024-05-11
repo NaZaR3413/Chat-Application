@@ -20,7 +20,10 @@ public class Auth {
     }
 
     // method to generate a random salt
-    private static String generateSalt()  {
-        return null;
+    private static String generateSalt()  throws NoSuchAlgorithmException{
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
     }
 }
