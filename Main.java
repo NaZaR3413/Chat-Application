@@ -3,7 +3,6 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
-        test();
 
         try (Connection conn = Database.connect()) {
             if (conn != null) {
@@ -16,7 +15,4 @@ public class Main {
         }
     }
 
-    public static void test() {
-        System.out.println("Test method works!");
-    }
 }
