@@ -1,9 +1,10 @@
 import java.sql.Connection;
 import java.sql.SQLException;
 
-
 public class Main {
     public static void main(String[] args) {
+        test();
+
         try (Connection conn = Database.connect()) {
             if (conn != null) {
                 System.out.println("Successfully connected to the database!");
@@ -13,5 +14,9 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void test() {
+        System.out.println("Test method works!");
     }
 }
