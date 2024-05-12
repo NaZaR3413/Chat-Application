@@ -6,9 +6,9 @@ public class Database {
     // sql database url
     private static final String url = "jdbc:mysql://localhost:3306/chatapp";
     private static final String user = "root"; // mysql username
-    private static final String password = "nhp000r123"; // mysql password
+    private static final String password = ""; // mysql password
 
-    static {
+    /*static {
         try {
             System.out.println(System.getProperty("java.class.path"));
 
@@ -17,14 +17,19 @@ public class Database {
             System.out.println("ERROR: MySQL JDBC Driver not found.");
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static Connection connect() {
         //try to connect to the database. return nothing if unsuccessful
         try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             System.out.println("ERROR: Database Connection Failed: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            System.out.println("ERROR: MySQL JDBC Driver not found.");
             e.printStackTrace();
             return null;
         }
