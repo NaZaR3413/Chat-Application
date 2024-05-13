@@ -38,6 +38,36 @@ public class Auth {
     
     // log in a user
     public static Integer loginUser(String username, String password) {
+        try(Connection conn = Database.connect()) {
+            // initialize the query to get user information, if it exists
+            PreparedStatement pstmt = conn.prepareStatement(SELECT_USER);
+            pstmt.setString(1, username);
+
+            // attempt to retrieve a user from database
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()) {
+                // retrieve stored hash and salt
+                String storedHash = rs.getString("password_hash");
+                String salt = rs.getString("salt");
+
+                // hash the password user is attempting to login with, and compare the hashed password 
+                // with the stored hashed password to confirm if it is correct or not 
+                String hashedPassword = hashPassword(password, salt);
+                if(hashedPassword.equals(storedHash)) {
+                    // return the user's id if successful
+                    return rs.getInt("id");
+                }
+            }
+
+        } catch(SQLException e) {
+            System.out.println("ERROR in loginuser: " + e);
+            e.printStackTrace();
+            return null;
+        } catch(NoSuchAlgorithmException p) {
+            System.out.println("ERROR in loginuser: " + p);
+            p.printStackTrace();
+            return null;
+        }
         return null;
     }
 
