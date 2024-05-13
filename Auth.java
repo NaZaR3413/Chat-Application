@@ -15,8 +15,11 @@ public class Auth {
     }
 
     // method to hash a password with a given salt
-    private static String hashPassword(String password, String salt) {
-        return null;
+    private static String hashPassword(String password, String salt) throws NoSuchAlgorithmException{
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(Base64.getDecoder().decode(salt));
+        byte[] hashedPassword = md.digest(password.getBytes());
+        return Base64.getEncoder().encodeToString(hashedPassword);
     }
 
     // method to generate a random salt
