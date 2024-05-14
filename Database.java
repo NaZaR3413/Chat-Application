@@ -35,7 +35,7 @@ public class Database {
         }
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         try (Connection conn = connect()) {
             if (conn != null) {
                 System.out.println("Successfully connected to the database!");
@@ -45,6 +45,6 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }*/
     
 }
