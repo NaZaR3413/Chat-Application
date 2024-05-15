@@ -32,11 +32,35 @@ public class Client
             {
                 case 1: // login
                 // ask for/read in username
+                System.out.println("Enter username");
+                String username = scn.nextLine();
                 // ask for/read in password
+                System.out.println("Enter password");
+                String password = scn.nextLine();
+
                 // confirm login with server side 
+                // signal user login, then send appropriate information
+                try {
+                    dos.writeInt(1);
+                    dos.writeUTF(username);
+                    dos.writeUTF(password);
+                } catch(IOException e) {
+                    System.out.println("ERROR in Client case 1: ");
+                    e.printStackTrace();
+                }
+
                 // if valid login
                     // start user's threads
                 // else reject and have user try again
+                String msg = dis.readUTF();
+                if(msg.equals("Client Logged in successfully"))
+                {
+                    // force out, continue with thread initialization
+                    options = 4;
+                } else if(msg.equals("ERROR: Login failed")) {
+                    System.out.println("Login failed, please try again");
+                }
+                break;
 
                 case 2: // create account
                 // ask for/read in username
@@ -45,6 +69,7 @@ public class Client
                 // if account created and logged in
                     // start user's threads
                 // else reject and have user try again
+                break;
 
                 case 3: // print menu 
                 clientMenu();
@@ -62,14 +87,14 @@ public class Client
         } while (options != 4);
 
         // read in username
-        System.out.println("Enter username");
-        String username = scn.nextLine();
+        //System.out.println("Enter username");
+        //String username = scn.nextLine();
 
-        try {
+        /*try {
             dos.writeUTF(username);
         } catch(IOException e) {
             e.printStackTrace();
-        }
+        }*/
   
         // sendMessage thread 
         Thread sendMessage = new Thread(new Runnable()  
