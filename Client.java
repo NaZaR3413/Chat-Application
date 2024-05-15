@@ -21,15 +21,80 @@ public class Client
         DataInputStream dis = new DataInputStream(socket.getInputStream()); 
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream()); 
 
-        // read in username
-        System.out.println("Enter username");
-        String username = scn.nextLine();
+        // do/while switch reader
+        int options = 0;
 
-        try {
+        do {
+            // print client's option menu
+            clientMenu();
+            options = scn.nextInt();
+            switch(options)
+            {
+                case 1: // login
+                // ask for/read in username
+                System.out.println("Enter username");
+                String username = scn.nextLine();
+                // ask for/read in password
+                System.out.println("Enter password");
+                String password = scn.nextLine();
+
+                // confirm login with server side 
+                // signal user login, then send appropriate information
+                try {
+                    dos.writeInt(1);
+                    dos.writeUTF(username);
+                    dos.writeUTF(password);
+                } catch(IOException e) {
+                    System.out.println("ERROR in Client case 1: ");
+                    e.printStackTrace();
+                }
+
+                // if valid login
+                    // start user's threads
+                // else reject and have user try again
+                String msg = dis.readUTF();
+                if(msg.equals("Client Logged in successfully"))
+                {
+                    // force out, continue with thread initialization
+                    options = 4;
+                } else if(msg.equals("ERROR: Login failed")) {
+                    System.out.println("Login failed, please try again");
+                }
+                break;
+
+                case 2: // create account
+                // ask for/read in username
+                // ask for/read in password
+                // confirm account creation/login with server side
+                // if account created and logged in
+                    // start user's threads
+                // else reject and have user try again
+                break;
+
+                case 3: // print menu 
+                clientMenu();
+                break;
+
+                case 4: // logout
+                System.out.println("\t\tLogging out!");
+                break;
+
+                default: // invalid inputs
+                System.out.println("\t\t Please enter a valid input!");
+                break;
+
+            }
+        } while (options != 4);
+
+        // read in username
+        //System.out.println("Enter username");
+        //String username = scn.nextLine();
+
+        /*try {
             dos.writeUTF(username);
         } catch(IOException e) {
             e.printStackTrace();
-        }
+        }*/
   
         // sendMessage thread 
         Thread sendMessage = new Thread(new Runnable()  
@@ -133,5 +198,13 @@ public class Client
             System.out.println("ERROR: File does not exist or is not a valid file");
         }
 
+    }
+
+    public static void clientMenu() {
+        System.out.println("\t\tPlease enter the number associated with one of the following options: \n" +
+                            "\t\t 1:\tLogin\n" +
+                            "\t\t 2:\tCreate an Account\n" +
+                            "\t\t 3:\tPrint Menu\n" +
+                            "\t\t 4:\tLogout\n");
     }
 } 

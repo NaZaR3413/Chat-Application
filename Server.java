@@ -1,10 +1,13 @@
 import java.io.*;
 import java.util.*;
 import java.net.*;
+import java.sql.Connection;
+import java.sql.SQLException;
  
 public class Server 
 {
- 
+    // java -cp "c:\Users\nilay\Downloads\mysql-connector-j-8.4.0\mysql-connector-j-8.4.0\mysql-connector-j-8.4.0.jar;./bin" Server.java
+
     // Vector to store active clients
     static Vector<ClientHandler> ar = new Vector<>();
  
@@ -27,6 +30,15 @@ public class Server
             DataInputStream dis = new DataInputStream(socket.getInputStream());
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
+            // placeholder for user ID
+            int ID = 0;
+            // connect to database
+            Connection conn = Database.connect();
+            if(conn == null) {
+                System.out.println("ERROR: Failed to connect to the database");
+            }
+        
+
             // do/while switch reader
             int options = 0;
             boolean validLogin = false;
@@ -37,27 +49,39 @@ public class Server
                 {
                     case 1: // login
                     // read username
+                    String username = dis.readUTF();
                     // read password
-                    // confirm authentication
-                    // if authentication is confirmed, 
+                    String password = dis.readUTF();
+
+                    // connect to database and confirm authentication
+                    int tmpId = Auth.loginUser(username, password, conn);
+                    // if authentication is confirmed, set validLogin to true, write confirmtion to client, exit do/while and:
                         // read in user's id
                         // create clienthandler object for user
                         // add user to active client's list
-                        // create/start user's thread and set validLogin to true
+                        // create/start user's thread 
 
                     // if false, reject and have user try again or create an account
+                    if(tmpId != -1) {
+                        ID = tmpId;
+                        dos.writeUTF("Client Logged in successfully");
+                        validLogin = true;
+                    }
+                    else { // -1 means login failed
+                        dos.writeUTF("ERROR: Login failed");
+                    }
                     break;
 
                     case 2: // create an account
                     // read in a username
                     // read in a password
                     // attempt to create the account
-                    // if successful 
+                    // if successful, set validLogin to true, exit do/while and:
                         // read in user's id
                         // create clienthandler object for user
                         // add user to active client's list
-                        // create/start user's thread and set validLogin to true
-                        
+                        // create/start user's thread
+
                     // else, reject, have user try again
                     break;
 
@@ -77,7 +101,7 @@ public class Server
             String username = dis.readUTF();
             
             // Create a new handler object for handling this request.
-            ClientHandler mtch = new ClientHandler(socket,username, dis, dos);
+            ClientHandler mtch = new ClientHandler(socket,username, dis, dos, ID);
  
             // Create a new Thread with this object.
             Thread thread = new Thread(mtch);
@@ -103,15 +127,17 @@ class ClientHandler implements Runnable
     final DataOutputStream dos;
     Socket socket;
     boolean isloggedin;
+    private int ID;
      
     // constructor
     public ClientHandler(Socket socket, String name,
-                            DataInputStream dis, DataOutputStream dos) {
+                            DataInputStream dis, DataOutputStream dos, int ID) {
         this.dis = dis;
         this.dos = dos;
         this.name = name;
         this.socket = socket;
         this.isloggedin=true;
+        this.ID = ID;
     }
  
     @Override
