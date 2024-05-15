@@ -12,7 +12,6 @@ public class Server
     {
         // server is listening on port 1234
         ServerSocket ss = new ServerSocket(8080);
-         
         Socket socket;
          
         // running infinite loop for getting
@@ -27,6 +26,50 @@ public class Server
             // obtain input and output streams
             DataInputStream dis = new DataInputStream(socket.getInputStream());
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
+            // do/while switch reader
+            int options = 0;
+            boolean validLogin = false;
+
+            do {
+                options = dis.readInt();
+                switch(options) 
+                {
+                    case 1: // login
+                    // read username
+                    // read password
+                    // confirm authentication
+                    // if authentication is confirmed, 
+                        // read in user's id
+                        // create clienthandler object for user
+                        // add user to active client's list
+                        // create/start user's thread and set validLogin to true
+
+                    // if false, reject and have user try again or create an account
+                    break;
+
+                    case 2: // create an account
+                    // read in a username
+                    // read in a password
+                    // attempt to create the account
+                    // if successful 
+                        // read in user's id
+                        // create clienthandler object for user
+                        // add user to active client's list
+                        // create/start user's thread and set validLogin to true
+                        
+                    // else, reject, have user try again
+                    break;
+
+                    case 3: // user wants to print the menu again 
+                    // do nothing, will be handled on the client side
+                    break;
+
+                    default: // do nothing, will be handled on the client end
+                    break;
+                }
+
+            } while (validLogin != true);
              
             System.out.println("Creating a new handler for this client...");
             
