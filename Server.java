@@ -32,12 +32,6 @@ public class Server
 
             // placeholder for user ID
             int ID = 0;
-            // connect to database
-            Connection conn = Database.connect();
-            if(conn == null) {
-                System.out.println("ERROR: Failed to connect to the database");
-            }
-        
 
             // do/while switch reader
             int options = 0;
@@ -54,7 +48,7 @@ public class Server
                     String password = dis.readUTF();
 
                     // connect to database and confirm authentication
-                    int tmpId = Auth.loginUser(username, password, conn);
+                    int tmpId = Auth.loginUser(username, password);
                     // if authentication is confirmed, set validLogin to true, write confirmtion to client, exit do/while and:
                         // read in user's id
                         // create clienthandler object for user

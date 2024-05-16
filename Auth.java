@@ -8,8 +8,8 @@ public class Auth {
     private static final String SELECT_USER = "SELECT id, password_hash, salt FROM Users WHERE username = ?";
     
     // register a new user
-    public static boolean registerUser(String username, String password, Connection conn) {
-        try { // Connection conn = Database.connect()
+    public static boolean registerUser(String username, String password) {
+        try (Connection conn = Database.connect()) { // Connection conn = Database.connect()
             // generate salt and hash user's password
             String salt = generateSalt();
             String hashedPassword = hashPassword(password, salt);
@@ -37,8 +37,8 @@ public class Auth {
     } 
     
     // log in a user
-    public static Integer loginUser(String username, String password, Connection conn) {
-        try { // (Connection conn = Database.connect())
+    public static Integer loginUser(String username, String password) {
+        try (Connection conn = Database.connect()) { // (Connection conn = Database.connect())
             // initialize the query to get user information, if it exists
             PreparedStatement pstmt = conn.prepareStatement(SELECT_USER);
             pstmt.setString(1, username);
