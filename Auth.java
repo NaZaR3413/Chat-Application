@@ -8,7 +8,7 @@ public class Auth {
     private static final String SELECT_USER = "SELECT id, password_hash, salt FROM Users WHERE username = ?";
     
     // register a new user
-    public static boolean registerUser(String username, String password) {
+    public static Integer registerUser(String username, String password) {
         try (Connection conn = Database.connect()) { // Connection conn = Database.connect()
             // generate salt and hash user's password
             String salt = generateSalt();
@@ -22,17 +22,20 @@ public class Auth {
             pstmt.setString(3, salt);
             pstmt.executeUpdate();
 
-            // return true if successful
-            return true;
+            // grab user and return user's ID to the server
+            pstmt = conn.prepareStatement(SELECT_USER);
+            pstmt.setString(1, username);
+
+            return pstmt.executeQuery().getInt("id");
 
         } catch(SQLException e) { // print the error and return false if unsuccessful
             System.out.println("ERROR in registeruser: " + e);
             e.printStackTrace();
-            return false;
+            return -1;
         } catch(NoSuchAlgorithmException p) {
             System.out.println("ERROR in registeruser: " + p);
             p.printStackTrace();
-            return false;
+            return -1;
         }
     } 
     
