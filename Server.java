@@ -30,8 +30,10 @@ public class Server
             DataInputStream dis = new DataInputStream(socket.getInputStream());
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            // placeholder for user ID
+            // placeholder for user ID, user and pass
             int ID = 0;
+            String username = "";
+            String password;
 
             // do/while switch reader
             int options = 0;
@@ -43,9 +45,9 @@ public class Server
                 {
                     case 1: // login
                     // read username
-                    String username = dis.readUTF();
+                    username = dis.readUTF();
                     // read password
-                    String password = dis.readUTF();
+                    password = dis.readUTF();
 
                     // connect to database and confirm authentication
                     int tmpId = Auth.loginUser(username, password);
@@ -68,8 +70,20 @@ public class Server
 
                     case 2: // create an account
                     // read in a username
+                    username = dis.readUTF();
                     // read in a password
+                    password = dis.readUTF();
                     // attempt to create the account
+                    int registerCheck = Auth.registerUser(username, password);
+                    if(registerCheck != -1) {
+                        ID = registerCheck;
+                        dos.writeUTF("Client Logged in successfully");
+                        validLogin = true;
+                    }
+                    else {
+                        dos.writeUTF("ERROR: User Registration Failed");
+                    }
+
                     // if successful, set validLogin to true, exit do/while and:
                         // read in user's id
                         // create clienthandler object for user
@@ -92,7 +106,7 @@ public class Server
             System.out.println("Creating a new handler for this client...");
             
             // listen for and pull username from client side
-            String username = dis.readUTF();
+            //String username = dis.readUTF();
             
             // Create a new handler object for handling this request.
             ClientHandler mtch = new ClientHandler(socket,username, dis, dos, ID);
